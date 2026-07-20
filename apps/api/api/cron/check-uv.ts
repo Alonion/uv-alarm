@@ -1,9 +1,14 @@
 import { createEventKey, firstThresholdCrossing, getCity, localHour } from '@uv-alarm/shared';
-import { disableDevice, enabledDevices, finishEvent, reserveEvent } from '../../src/db/repository';
-import { getForecasts } from '../../src/forecast-service';
-import { isInvalidTokenError, sendUVPush } from '../../src/firebase';
-import type { ApiRequest, ApiResponse } from '../../src/http';
-import { json, method } from '../../src/http';
+import {
+  disableDevice,
+  enabledDevices,
+  finishEvent,
+  reserveEvent,
+} from '../../src/db/repository.js';
+import { getForecasts } from '../../src/forecast-service.js';
+import { isInvalidTokenError, sendUVPush } from '../../src/firebase.js';
+import type { ApiRequest, ApiResponse } from '../../src/http.js';
+import { json, method } from '../../src/http.js';
 
 export default async function handler(req: ApiRequest, res: ApiResponse): Promise<void> {
   if (!method(req, res, ['GET'])) return;

@@ -1,8 +1,8 @@
 import { cityIdSchema } from '@uv-alarm/shared';
-import { getForecast } from '../src/forecast-service';
-import type { ApiRequest, ApiResponse } from '../src/http';
-import { json, method, queryValue } from '../src/http';
-import { rateLimit, requestIp } from '../src/rate-limit';
+import { getForecast } from '../src/forecast-service.js';
+import type { ApiRequest, ApiResponse } from '../src/http.js';
+import { json, method, queryValue } from '../src/http.js';
+import { rateLimit, requestIp } from '../src/rate-limit.js';
 
 export default async function handler(req: ApiRequest, res: ApiResponse): Promise<void> {
   if (!method(req, res, ['GET'])) return;

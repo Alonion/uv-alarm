@@ -2,7 +2,7 @@ import { neon } from '@neondatabase/serverless';
 import { and, eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/neon-http';
 import type { DevicePreferences, DeviceRegistration } from '@uv-alarm/shared';
-import { devices, notificationEvents, type DeviceRow } from './schema';
+import { devices, notificationEvents, type DeviceRow } from './schema.js';
 
 function database() {
   if (!process.env.DATABASE_URL) throw new Error('Database is not configured');

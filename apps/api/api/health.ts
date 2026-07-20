@@ -1,5 +1,5 @@
-import type { ApiRequest, ApiResponse } from '../src/http';
-import { json, method } from '../src/http';
+import type { ApiRequest, ApiResponse } from '../src/http.js';
+import { json, method } from '../src/http.js';
 
 export default function handler(req: ApiRequest, res: ApiResponse): void {
   if (!method(req, res, ['GET'])) return;

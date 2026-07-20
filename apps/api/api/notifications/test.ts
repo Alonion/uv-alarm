@@ -1,9 +1,9 @@
 import { createEventKey, getCity, localHour, testNotificationSchema } from '@uv-alarm/shared';
-import { findDeviceByInstallation } from '../../src/db/repository';
-import { sendUVPush } from '../../src/firebase';
-import type { ApiRequest, ApiResponse } from '../../src/http';
-import { body, json, method } from '../../src/http';
-import { rateLimit, requestIp } from '../../src/rate-limit';
+import { findDeviceByInstallation } from '../../src/db/repository.js';
+import { sendUVPush } from '../../src/firebase.js';
+import type { ApiRequest, ApiResponse } from '../../src/http.js';
+import { body, json, method } from '../../src/http.js';
+import { rateLimit, requestIp } from '../../src/rate-limit.js';
 
 export default async function handler(req: ApiRequest, res: ApiResponse): Promise<void> {
   if (!method(req, res, ['POST'])) return;

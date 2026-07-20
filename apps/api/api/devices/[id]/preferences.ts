@@ -1,8 +1,8 @@
 import { devicePreferencesSchema } from '@uv-alarm/shared';
-import { updateDevice } from '../../../src/db/repository';
-import type { ApiRequest, ApiResponse } from '../../../src/http';
-import { body, json, method, queryValue } from '../../../src/http';
-import { rateLimit, requestIp } from '../../../src/rate-limit';
+import { updateDevice } from '../../../src/db/repository.js';
+import type { ApiRequest, ApiResponse } from '../../../src/http.js';
+import { body, json, method, queryValue } from '../../../src/http.js';
+import { rateLimit, requestIp } from '../../../src/rate-limit.js';
 
 export default async function handler(req: ApiRequest, res: ApiResponse): Promise<void> {
   if (!method(req, res, ['PATCH'])) return;

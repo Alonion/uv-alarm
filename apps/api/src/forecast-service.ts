@@ -4,7 +4,7 @@ import {
   zonedLocalToIso,
   type UVForecastResponse,
 } from '@uv-alarm/shared';
-import { decodeIMSXml, IMS_RADIATION_URL, parseIMSXml } from './ims';
+import { decodeIMSXml, IMS_RADIATION_URL, parseIMSXml } from './ims.js';
 
 const CACHE_MS = 15 * 60 * 1000;
 const STALE_MS = 6 * 60 * 60 * 1000;
