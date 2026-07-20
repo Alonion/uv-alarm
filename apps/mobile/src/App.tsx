@@ -284,8 +284,13 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
       }
 
       const localPatch = { alarmEnabled: true, remoteEnabled: false };
-      if (settings.onboardingCompleted) await updateSettings(localPatch, false);
-      else await finishOnboarding(localPatch);
+      if (!settings.onboardingCompleted) {
+        await finishOnboarding(localPatch);
+        setNotice('On-device forecast alerts are enabled.');
+        return;
+      }
+
+      await updateSettings(localPatch, false);
       await testLocalNotification(settings.threshold);
       setNotice('Notifications enabled on this device. A test alert is on its way.');
 
@@ -739,22 +744,29 @@ function SettingsScreen({
             </button>
           )}
           {permission === 'granted' && (
-            <button
-              className="button secondary wide"
-              onClick={() =>
-                void onTest()
-                  .then(() =>
-                    onNotice(
-                      settings.remoteEnabled
-                        ? 'Remote test notification sent.'
-                        : 'Test notification scheduled.',
-                    ),
-                  )
-                  .catch(() => onNotice('Couldn’t send a test notification.'))
-              }
-            >
-              {settings.remoteEnabled ? 'Test remote notification' : 'Test local notification'}
-            </button>
+            <>
+              {!settings.remoteEnabled && (
+                <button className="button primary wide" onClick={() => void onEnable()}>
+                  Enable remote alerts
+                </button>
+              )}
+              <button
+                className="button secondary wide"
+                onClick={() =>
+                  void onTest()
+                    .then(() =>
+                      onNotice(
+                        settings.remoteEnabled
+                          ? 'Remote test notification sent.'
+                          : 'Test notification scheduled.',
+                      ),
+                    )
+                    .catch(() => onNotice('Couldn’t send a test notification.'))
+                }
+              >
+                {settings.remoteEnabled ? 'Test remote notification' : 'Test local notification'}
+              </button>
+            </>
           )}
           {settings.remoteEnabled && (
             <button className="button text danger wide" onClick={() => void removeRegistration()}>
