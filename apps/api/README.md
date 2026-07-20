@@ -9,4 +9,3 @@ Serverless API for the UV Alarm mobile application.
 - Install Command: `corepack pnpm install --frozen-lockfile`
 - Include source files outside the Root Directory so the API can access the
   workspace packages and root lockfile.
-
