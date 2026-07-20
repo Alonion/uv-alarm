@@ -97,6 +97,16 @@ function Onboarding({
   onEnable: () => Promise<void>;
 }) {
   const [page, setPage] = useState(0);
+  const [enabling, setEnabling] = useState(false);
+  const enable = async (): Promise<void> => {
+    if (enabling) return;
+    setEnabling(true);
+    try {
+      await onEnable();
+    } finally {
+      setEnabling(false);
+    }
+  };
   return (
     <main className="onboarding">
       <div className="brand-mark">
@@ -175,10 +185,14 @@ function Onboarding({
               UV Alarm can notify you when the forecast reaches your level. Android will ask
               permission only if you choose to enable it.
             </p>
-            <button className="button primary wide" onClick={() => void onEnable()}>
-              <Bell size={18} /> Enable notifications
+            <button
+              className="button primary wide"
+              onClick={() => void enable()}
+              disabled={enabling}
+            >
+              <Bell size={18} /> {enabling ? 'Enabling…' : 'Enable notifications'}
             </button>
-            <button className="button text wide" onClick={onFinish}>
+            <button className="button text wide" onClick={onFinish} disabled={enabling}>
               Not now — view forecast
             </button>
           </>
@@ -268,14 +282,25 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
         setNotice('Notifications are blocked in Android settings.');
         return;
       }
-      const deviceId = await enableRemote({ ...settings, alarmEnabled: true });
-      await updateSettings({ alarmEnabled: true, remoteEnabled: true, deviceId }, false);
+
+      const localPatch = { alarmEnabled: true, remoteEnabled: false };
+      if (settings.onboardingCompleted) await updateSettings(localPatch, false);
+      else await finishOnboarding(localPatch);
       await testLocalNotification(settings.threshold);
-      setNotice('Notifications enabled. A test alert is on its way.');
-      if (!settings.onboardingCompleted)
-        await finishOnboarding({ deviceId, alarmEnabled: true, remoteEnabled: true });
+      setNotice('Notifications enabled on this device. A test alert is on its way.');
+
+      try {
+        const deviceId = await enableRemote({ ...settings, ...localPatch });
+        await updateSettings(
+          { ...localPatch, onboardingCompleted: true, remoteEnabled: true, deviceId },
+          false,
+        );
+        setNotice('Notifications enabled. A test alert is on its way.');
+      } catch {
+        setNotice('On-device alerts are enabled. Remote alerts are not configured yet.');
+      }
     } catch {
-      setNotice('Couldn’t register this device for alerts. In-app alerts are still available.');
+      setNotice('Couldn’t enable notifications. Check Android settings and try again.');
     }
   };
 

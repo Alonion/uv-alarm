@@ -39,10 +39,14 @@ export async function notificationPermission(): Promise<PermissionStatus> {
 
 export async function requestNotificationPermission(): Promise<PermissionStatus> {
   if (!isNative()) return 'unavailable';
-  const local = await LocalNotifications.requestPermissions();
-  if (local.display !== 'granted') return 'denied';
+  await createNotificationChannel();
+  // On Android, local and push notifications share POST_NOTIFICATIONS. Request it
+  // once through the push plugin; requesting it through both plugins during the
+  // first-run activity can start overlapping native permission flows.
   const push = await PushNotifications.requestPermissions();
-  return push.receive === 'granted' ? 'granted' : 'denied';
+  if (push.receive !== 'granted') return 'denied';
+  const local = await LocalNotifications.checkPermissions();
+  return local.display === 'granted' ? 'granted' : 'denied';
 }
 
 export async function testLocalNotification(threshold: number): Promise<void> {
