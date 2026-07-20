@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "pnpm run build",
+  "buildCommand": "pnpm --filter @uv-alarm/shared build && pnpm run build",
   "outputDirectory": "dist",
   "crons": [{ "path": "/api/cron/check-uv", "schedule": "0 5 * * *" }],
   "headers": [

@@ -1,4 +1,10 @@
-import { firstBelowAfter, firstThresholdTime, peakUV, todaysForecast, type HourlyUV } from './time';
+import {
+  firstBelowAfter,
+  firstThresholdTime,
+  peakUV,
+  todaysForecast,
+  type HourlyUV,
+} from './time.js';
 
 export type ForecastSummary = {
   today: HourlyUV[];

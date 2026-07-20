@@ -1,4 +1,4 @@
-import { CITIES, type ForecastCity } from './cities';
+import { CITIES, type ForecastCity } from './cities.js';
 
 const EARTH_RADIUS_KM = 6371;
 

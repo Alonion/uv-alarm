@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CITIES, FORECAST_TIMEZONE } from './cities';
+import { CITIES, FORECAST_TIMEZONE } from './cities.js';
 
 const cityIds = CITIES.map((city) => city.id);
 
