@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SolarRadiationForecast xmlns="https://ims.gov.il/forecast">
+  <Identification><IssueDateTime>2026-07-20 03:00</IssueDateTime></Identification>
+  <Location>
+    <LocationMetaData><LocationId>204</LocationId><LocationNameEng>Lod</LocationNameEng><LocationNameHeb>לוד</LocationNameHeb></LocationMetaData>
+    <LocationData>
+      <TimeUnitData><SolRadPeriod><DateTimeFrom>2026-07-20 10:00</DateTimeFrom><DateTimeTo>2026-07-20 11:00</DateTimeTo></SolRadPeriod><Element><ElementName>Radiation</ElementName><ElementValue>H</ElementValue><ElementIndex>7</ElementIndex></Element></TimeUnitData>
+      <TimeUnitData><SolRadPeriod><DateTimeFrom>2026-07-20 11:00</DateTimeFrom><DateTimeTo>2026-07-20 12:00</DateTimeTo></SolRadPeriod><Element><ElementName>Radiation</ElementName><ElementValue>VH</ElementValue><ElementIndex>9</ElementIndex></Element></TimeUnitData>
+      <TimeUnitData><SolRadPeriod><DateTimeFrom>2026-07-20 11:00</DateTimeFrom><DateTimeTo>2026-07-20 12:00</DateTimeTo></SolRadPeriod><Element><ElementName>Radiation</ElementName><ElementValue>VH</ElementValue><ElementIndex>9</ElementIndex></Element></TimeUnitData>
+    </LocationData>
+  </Location>
+</SolarRadiationForecast>

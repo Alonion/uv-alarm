@@ -1,0 +1,35 @@
+{
+  "name": "@uv-alarm/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.14.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint api src tests drizzle.config.ts",
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
+    "@uv-alarm/shared": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "fast-xml-parser": "^5.2.5",
+    "firebase-admin": "^14.2.0",
+    "iconv-lite": "^0.6.3",
+    "zod": "^4.0.10"
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "drizzle-kit": "^0.31.4",
+    "typescript": "^6.0.2",
+    "vercel": "^56.3.2",
+    "vitest": "^4.1.10"
+  }
+}

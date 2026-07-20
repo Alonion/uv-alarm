@@ -1,0 +1,3 @@
+Place the real Firebase-generated google-services.json beside this file and remove the .example suffix.
+
+Do not commit the real file. It must define the Android app com.uvalarm.app.
