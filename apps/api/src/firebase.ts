@@ -23,7 +23,7 @@ export async function sendUVPush(
     token,
     notification: { title, body },
     data,
-    android: { priority: 'high', notification: { channelId: 'uv-alerts', sound: 'default' } },
+    android: { priority: 'high', notification: { channelId: 'uv-alerts-v2', sound: 'default' } },
   });
 }
 

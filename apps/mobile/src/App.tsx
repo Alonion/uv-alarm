@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import {
   Bell,
   BellRing,
@@ -30,6 +30,7 @@ import type {
   ThemePreference,
 } from './models';
 import { fetchForecast, sendTestPush } from './services/api';
+import { celestialState } from './services/celestial';
 import {
   createNotificationChannel,
   enableRemote,
@@ -236,11 +237,17 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
   const [notice, setNotice] = useState<string>();
   const [locationNote, setLocationNote] = useState<string>();
   const [locationBusy, setLocationBusy] = useState(false);
+  const [clock, setClock] = useState(() => Date.now());
   const settingsRef = useRef(settings);
 
   useEffect(() => {
     settingsRef.current = settings;
   }, [settings]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setClock(Date.now()), 60_000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const updateSettings = async (patch: Partial<Settings>, sync = true): Promise<Settings> => {
     const next = { ...settings, ...patch };
@@ -362,6 +369,14 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
 
   const point = currentPoint(forecast);
   const category = getUVCategory(point?.uv ?? 0);
+  const sky = useMemo(
+    () => celestialState(new Date(clock), forecast?.location.timezone),
+    [clock, forecast?.location.timezone],
+  );
+  const skyPosition = {
+    '--orb-x': `${sky.x}%`,
+    '--orb-y': `${sky.y}%`,
+  } as CSSProperties;
   const summary = useMemo(
     () => (forecast ? summarizeForecast(forecast.hourly, settings.threshold) : undefined),
     [forecast, settings.threshold],
@@ -398,11 +413,11 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
     );
 
   return (
-    <div className="app-shell weather-shell">
+    <div className={`app-shell weather-shell sky-${sky.phase}`}>
       <header className="app-header">
         <div className="brand">
-          <span className="brand-sun">
-            <Sun size={21} />
+          <span className={`brand-sun ${sky.isNight ? 'moon' : ''}`}>
+            {sky.isNight ? <Moon size={20} /> : <Sun size={21} />}
           </span>
           <span>UV Alarm</span>
         </div>
@@ -445,8 +460,12 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
           <Skeleton />
         ) : (
           <>
-            <section className={`uv-card category-${category.toLowerCase().replace(' ', '-')}`}>
-              <span className="weather-sun" aria-hidden />
+            <section
+              className={`uv-card category-${category.toLowerCase().replace(' ', '-')} sky-${sky.phase}`}
+              style={skyPosition}
+            >
+              {sky.isNight && <span className="weather-stars" aria-hidden />}
+              <span className={`weather-orb ${sky.isNight ? 'moon' : 'sun'}`} aria-hidden />
               <span className="weather-wave wave-one" aria-hidden />
               <span className="weather-wave wave-two" aria-hidden />
               <div className="uv-card-top">
@@ -791,7 +810,11 @@ function SettingsScreen({
             </div>
             <button
               className="button secondary"
-              onClick={() => void openNotificationSoundSettings()}
+              onClick={() =>
+                void openNotificationSoundSettings().catch(() =>
+                  onNotice('Couldn’t open the Android sound settings.'),
+                )
+              }
             >
               Choose sound
             </button>

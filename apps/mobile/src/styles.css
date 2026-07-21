@@ -164,6 +164,13 @@ button:disabled {
     0 0 0 5px rgba(255, 201, 81, 0.14),
     0 8px 18px rgba(196, 121, 0, 0.2);
 }
+.brand-sun.moon {
+  color: #e9f3ff;
+  background: linear-gradient(145deg, #344b78, #172744);
+  box-shadow:
+    0 0 0 5px rgba(146, 184, 255, 0.1),
+    0 8px 18px rgba(4, 15, 38, 0.32);
+}
 .header-actions {
   display: flex;
   gap: 4px;
@@ -249,18 +256,76 @@ button:disabled {
   color: #fff;
   background: linear-gradient(145deg, #b668c7, #783f9e 60%, #3b255f);
 }
-.weather-sun {
+.uv-card.sky-dawn {
+  background: linear-gradient(150deg, #625b91, #e89082 52%, #f8c989 100%);
+}
+.uv-card.sky-dusk {
+  color: #fff;
+  background: linear-gradient(150deg, #32527a, #d86d70 58%, #f1a56f 115%);
+}
+.uv-card.sky-night {
+  color: #f3f8ff;
+  background: linear-gradient(150deg, #07152e, #152b50 58%, #28486b 115%);
+  box-shadow: 0 24px 60px rgba(4, 18, 43, 0.34);
+}
+.weather-shell.sky-night {
+  background: linear-gradient(180deg, rgba(9, 27, 54, 0.42), transparent 34rem);
+}
+.weather-orb {
   position: absolute;
-  top: 62px;
-  right: 34px;
+  top: var(--orb-y, 24%);
+  left: var(--orb-x, 78%);
   width: 78px;
   height: 78px;
-  background: radial-gradient(circle at 35% 30%, #fff7b2, #ffd66d 56%, #ffb851);
+  transform: translate(-50%, -50%);
   border-radius: 50%;
+  opacity: 0.94;
+  transition:
+    top 1s ease,
+    left 1s ease;
+}
+.weather-orb.sun {
+  background: radial-gradient(circle at 35% 30%, #fff7b2, #ffd66d 56%, #ffb851);
   box-shadow:
     0 0 0 16px rgba(255, 239, 161, 0.16),
     0 14px 32px rgba(171, 113, 0, 0.18);
-  opacity: 0.9;
+}
+.weather-orb.moon {
+  background: radial-gradient(circle at 34% 30%, #ffffff, #dbe9f6 58%, #9fb9d3);
+  box-shadow:
+    0 0 0 15px rgba(179, 209, 255, 0.08),
+    0 0 38px rgba(195, 221, 255, 0.28);
+}
+.weather-orb.moon::before,
+.weather-orb.moon::after {
+  content: '';
+  position: absolute;
+  background: rgba(117, 145, 176, 0.22);
+  border-radius: 50%;
+}
+.weather-orb.moon::before {
+  width: 15px;
+  height: 15px;
+  top: 18px;
+  left: 18px;
+}
+.weather-orb.moon::after {
+  width: 10px;
+  height: 10px;
+  right: 18px;
+  bottom: 19px;
+}
+.weather-stars {
+  position: absolute;
+  inset: 0;
+  opacity: 0.78;
+  background-image:
+    radial-gradient(circle at 13% 19%, #fff 0 1px, transparent 1.7px),
+    radial-gradient(circle at 29% 33%, #fff 0 1.2px, transparent 1.9px),
+    radial-gradient(circle at 48% 13%, #fff 0 1px, transparent 1.7px),
+    radial-gradient(circle at 68% 31%, #fff 0 1px, transparent 1.7px),
+    radial-gradient(circle at 88% 17%, #fff 0 1.3px, transparent 2px);
+  pointer-events: none;
 }
 .weather-wave {
   position: absolute;

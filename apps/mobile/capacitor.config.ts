@@ -14,7 +14,7 @@ const config: CapacitorConfig = {
       androidScaleType: 'CENTER_CROP',
       splashFullScreen: true,
     },
-    LocalNotifications: { smallIcon: 'ic_stat_uv_alarm', iconColor: '#F59E0B', sound: 'default' },
+    LocalNotifications: { smallIcon: 'ic_stat_uv_alarm', iconColor: '#F59E0B' },
     PushNotifications: { presentationOptions: ['badge', 'sound', 'alert'] },
   },
 };

@@ -8,8 +8,10 @@ import { registerDevice, removeDevice, updateDevice } from './api';
 
 const NotificationSettings = registerPlugin<{
   open(): Promise<void>;
+  ensureChannel(options: { channelId: string }): Promise<void>;
   openChannel(options: { channelId: string }): Promise<void>;
 }>('NotificationSettings');
+export const NOTIFICATION_CHANNEL_ID = 'uv-alerts-v2';
 let pushToken: string | undefined;
 let listenersReady = false;
 
@@ -19,15 +21,7 @@ export function isNative(): boolean {
 
 export async function createNotificationChannel(): Promise<void> {
   if (!isNative()) return;
-  await LocalNotifications.createChannel({
-    id: 'uv-alerts',
-    name: 'UV Alerts',
-    description: 'Alerts when UV reaches your selected level',
-    importance: 5,
-    visibility: 1,
-    vibration: true,
-    sound: 'default',
-  });
+  await NotificationSettings.ensureChannel({ channelId: NOTIFICATION_CHANNEL_ID });
 }
 
 export async function notificationPermission(): Promise<PermissionStatus> {
@@ -58,7 +52,7 @@ export async function testLocalNotification(threshold: number): Promise<void> {
         id: 7101,
         title: 'UV Alarm',
         body: `Test successful — your alert level is UV ${threshold}.`,
-        channelId: 'uv-alerts',
+        channelId: NOTIFICATION_CHANNEL_ID,
         schedule: { at: new Date(Date.now() + 700) },
       },
     ],
@@ -82,7 +76,7 @@ export async function scheduleForecastNotification(
         id: 7102,
         title: 'UV Alarm',
         body: `UV is forecast to reach ${event.uv} in ${forecast.location.name}.`,
-        channelId: 'uv-alerts',
+        channelId: NOTIFICATION_CHANNEL_ID,
         schedule: { at: new Date(event.time), allowWhileIdle: true },
         extra: { cityId: settings.cityId, threshold: settings.threshold, forecastTime: event.time },
       },
@@ -180,5 +174,7 @@ export async function openNotificationSettings(): Promise<void> {
 }
 
 export async function openNotificationSoundSettings(): Promise<void> {
-  if (isNative()) await NotificationSettings.openChannel({ channelId: 'uv-alerts' });
+  if (!isNative()) return;
+  await createNotificationChannel();
+  await NotificationSettings.openChannel({ channelId: NOTIFICATION_CHANNEL_ID });
 }
