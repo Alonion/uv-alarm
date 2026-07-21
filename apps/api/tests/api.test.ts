@@ -96,22 +96,39 @@ describe('API handlers', () => {
   });
   it('accepts validated device preference changes', async () => {
     const { res, result } = response();
-    const handler = (await import('../api/devices/[id]/preferences')).default;
+    const handler = (await import('../api/devices/preferences')).default;
     await handler(
       {
-        method: 'PATCH',
-        query: { id: 'device-1' },
+        method: 'POST',
         headers: {},
-        body: { cityId: 'jerusalem', threshold: 7, enabled: true },
+        body: {
+          deviceId: '11111111-1111-4111-8111-111111111111',
+          preferences: { cityId: 'jerusalem', threshold: 7, enabled: true },
+        },
       },
       res,
     );
     expect(result.status).toBe(200);
-    expect(repository.updateDevice).toHaveBeenCalledWith('device-1', {
+    expect(repository.updateDevice).toHaveBeenCalledWith('11111111-1111-4111-8111-111111111111', {
       cityId: 'jerusalem',
       threshold: 7,
       enabled: true,
     });
+  });
+  it('removes a validated device registration', async () => {
+    const { res, result } = response();
+    const handler = (await import('../api/devices/remove')).default;
+    await handler(
+      {
+        method: 'POST',
+        headers: {},
+        body: { deviceId: '11111111-1111-4111-8111-111111111111' },
+      },
+      res,
+    );
+    expect(result.status).toBe(200);
+    expect(result.body).toEqual({ removed: true });
+    expect(repository.removeDevice).toHaveBeenCalledWith('11111111-1111-4111-8111-111111111111');
   });
   it('validates test notification requests without calling Firebase', async () => {
     const { res, result } = response();

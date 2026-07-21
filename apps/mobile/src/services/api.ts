@@ -40,16 +40,17 @@ export async function registerDevice(input: DeviceRegistration): Promise<string>
 }
 
 export async function updateDevice(deviceId: string, input: DevicePreferences): Promise<void> {
-  const response = await request(`/api/devices/${encodeURIComponent(deviceId)}/preferences`, {
-    method: 'PATCH',
-    body: JSON.stringify(input),
+  const response = await request('/api/devices/preferences', {
+    method: 'POST',
+    body: JSON.stringify({ deviceId, preferences: input }),
   });
   if (!response.ok) throw new Error('Preference sync failed');
 }
 
 export async function removeDevice(deviceId: string): Promise<void> {
-  const response = await request(`/api/devices/${encodeURIComponent(deviceId)}`, {
-    method: 'DELETE',
+  const response = await request('/api/devices/remove', {
+    method: 'POST',
+    body: JSON.stringify({ deviceId }),
   });
   if (!response.ok) throw new Error('Removal failed');
 }
