@@ -22,13 +22,20 @@ import {
   summarizeForecast,
   type UVForecastResponse,
 } from '@uv-alarm/shared';
-import type { BootstrapData, PermissionStatus, Settings, ThemePreference } from './models';
+import type {
+  AccentPreference,
+  BootstrapData,
+  PermissionStatus,
+  Settings,
+  ThemePreference,
+} from './models';
 import { fetchForecast, sendTestPush } from './services/api';
 import {
   createNotificationChannel,
   enableRemote,
   nearestForecastCity,
   notificationPermission,
+  openNotificationSoundSettings,
   openNotificationSettings,
   preparePushListeners,
   requestNotificationPermission,
@@ -41,6 +48,12 @@ import { resetStorage, saveForecast, saveSettings } from './services/storage';
 import { applyTheme } from './services/theme';
 
 const APP_VERSION = '1.0.0';
+const ACCENTS: Array<{ id: AccentPreference; label: string }> = [
+  { id: 'ocean', label: 'Ocean' },
+  { id: 'lagoon', label: 'Lagoon' },
+  { id: 'coral', label: 'Coral' },
+  { id: 'sunset', label: 'Sunset' },
+];
 
 function formatUpdate(time?: string): string {
   if (!time) return 'No update yet';
@@ -232,7 +245,7 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
   const updateSettings = async (patch: Partial<Settings>, sync = true): Promise<Settings> => {
     const next = { ...settings, ...patch };
     setSettings(next);
-    applyTheme(next.theme);
+    applyTheme(next.theme, next.accent);
     await saveSettings(next);
     if (sync) syncRemote(next).catch(() => setNotice('Couldn’t register this device for alerts.'));
     if (forecast) void scheduleForecastNotification(forecast, next);
@@ -385,7 +398,7 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
     );
 
   return (
-    <div className="app-shell">
+    <div className="app-shell weather-shell">
       <header className="app-header">
         <div className="brand">
           <span className="brand-sun">
@@ -433,6 +446,9 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
         ) : (
           <>
             <section className={`uv-card category-${category.toLowerCase().replace(' ', '-')}`}>
+              <span className="weather-sun" aria-hidden />
+              <span className="weather-wave wave-one" aria-hidden />
+              <span className="weather-wave wave-two" aria-hidden />
               <div className="uv-card-top">
                 <div>
                   <p className="city-name">
@@ -451,7 +467,7 @@ export default function App({ bootstrap }: { bootstrap: BootstrapData }) {
               <div className="uv-reading">
                 <span className="uv-number">{point ? Math.round(point.uv) : '—'}</span>
                 <div>
-                  <span className="uv-label">UV index</span>
+                  <span className="uv-label">UV index · now</span>
                   <strong>{category}</strong>
                 </div>
               </div>
@@ -768,6 +784,18 @@ function SettingsScreen({
               </button>
             </>
           )}
+          <div className="notification-sound-row">
+            <div>
+              <strong>Notification sound</strong>
+              <small>System default unless you choose another Android sound</small>
+            </div>
+            <button
+              className="button secondary"
+              onClick={() => void openNotificationSoundSettings()}
+            >
+              Choose sound
+            </button>
+          </div>
           {settings.remoteEnabled && (
             <button className="button text danger wide" onClick={() => void removeRegistration()}>
               <Trash2 size={17} /> Remove device registration
@@ -785,6 +813,20 @@ function SettingsScreen({
                 onClick={() => void onUpdate({ theme })}
               >
                 {theme[0]!.toUpperCase() + theme.slice(1)}
+              </button>
+            ))}
+          </div>
+          <label className="field-label">App color</label>
+          <div className="accent-grid" role="group" aria-label="App color">
+            {ACCENTS.map((accent) => (
+              <button
+                key={accent.id}
+                className={`accent-choice accent-${accent.id} ${settings.accent === accent.id ? 'active' : ''}`}
+                aria-pressed={settings.accent === accent.id}
+                onClick={() => void onUpdate({ accent: accent.id })}
+              >
+                <span className="accent-swatch" />
+                {accent.label}
               </button>
             ))}
           </div>
@@ -816,8 +858,8 @@ function SettingsScreen({
           </button>
         </section>
         <p className="settings-footer">
-          UV Alarm stores your city, threshold, theme, and a random installation ID. It never stores
-          your precise GPS location.
+          UV Alarm stores your city, threshold, color, theme, and a random installation ID. It never
+          stores your precise GPS location.
         </p>
       </main>
     </div>

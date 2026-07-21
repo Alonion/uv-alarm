@@ -6,7 +6,10 @@ import { findNearestCity, firstThresholdTime, type UVForecastResponse } from '@u
 import type { PermissionStatus, Settings } from '../models';
 import { registerDevice, removeDevice, updateDevice } from './api';
 
-const NotificationSettings = registerPlugin<{ open(): Promise<void> }>('NotificationSettings');
+const NotificationSettings = registerPlugin<{
+  open(): Promise<void>;
+  openChannel(options: { channelId: string }): Promise<void>;
+}>('NotificationSettings');
 let pushToken: string | undefined;
 let listenersReady = false;
 
@@ -174,4 +177,8 @@ export async function unregisterRemote(settings: Settings): Promise<void> {
 }
 export async function openNotificationSettings(): Promise<void> {
   if (isNative()) await NotificationSettings.open();
+}
+
+export async function openNotificationSoundSettings(): Promise<void> {
+  if (isNative()) await NotificationSettings.openChannel({ channelId: 'uv-alerts' });
 }

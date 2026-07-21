@@ -7,7 +7,7 @@ import { applyTheme } from './services/theme';
 
 async function bootstrap(): Promise<void> {
   const data = await loadBootstrap();
-  applyTheme(data.settings.theme);
+  applyTheme(data.settings.theme, data.settings.accent);
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App bootstrap={data} />

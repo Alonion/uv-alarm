@@ -6,7 +6,7 @@ import {
   themeSchema,
   type UVForecastResponse,
 } from '@uv-alarm/shared';
-import type { BootstrapData, Settings } from '../models';
+import type { AccentPreference, BootstrapData, Settings } from '../models';
 
 const KEYS = {
   city: 'selectedCityId',
@@ -14,6 +14,7 @@ const KEYS = {
   alarm: 'alarmEnabled',
   remote: 'remoteNotificationsEnabled',
   theme: 'themePreference',
+  accent: 'accentPreference',
   onboarding: 'onboardingCompleted',
   forecast: 'lastSuccessfulForecast',
   installation: 'installationId',
@@ -26,6 +27,9 @@ async function get(key: string): Promise<string | null> {
 function bool(value: string | null, fallback = false): boolean {
   return value === null ? fallback : value === 'true';
 }
+function accent(value: string | null): AccentPreference {
+  return value === 'lagoon' || value === 'coral' || value === 'sunset' ? value : 'ocean';
+}
 
 export async function loadBootstrap(): Promise<BootstrapData> {
   const [
@@ -34,6 +38,7 @@ export async function loadBootstrap(): Promise<BootstrapData> {
     alarmValue,
     remoteValue,
     themeValue,
+    accentValue,
     onboardingValue,
     forecastValue,
     installationValue,
@@ -62,6 +67,7 @@ export async function loadBootstrap(): Promise<BootstrapData> {
       alarmEnabled: bool(alarmValue),
       remoteEnabled: bool(remoteValue),
       theme: themeParsed.success ? themeParsed.data : 'system',
+      accent: accent(accentValue),
       onboardingCompleted: bool(onboardingValue),
       installationId,
       deviceId: deviceValue ?? undefined,
@@ -77,6 +83,7 @@ export async function saveSettings(settings: Settings): Promise<void> {
     Preferences.set({ key: KEYS.alarm, value: String(settings.alarmEnabled) }),
     Preferences.set({ key: KEYS.remote, value: String(settings.remoteEnabled) }),
     Preferences.set({ key: KEYS.theme, value: settings.theme }),
+    Preferences.set({ key: KEYS.accent, value: settings.accent }),
     Preferences.set({ key: KEYS.onboarding, value: String(settings.onboardingCompleted) }),
     Preferences.set({ key: KEYS.installation, value: settings.installationId }),
     settings.deviceId

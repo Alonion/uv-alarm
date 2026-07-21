@@ -30,6 +30,7 @@ describe('native preference storage', () => {
       alarmEnabled: true,
       remoteEnabled: true,
       theme: 'dark',
+      accent: 'coral',
       onboardingCompleted: true,
       installationId: '583f0220-c2c4-4e80-96b0-2fd11d7997b8',
       deviceId: 'device-1',
